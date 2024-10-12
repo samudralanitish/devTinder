@@ -2,31 +2,41 @@ const express=require("express");
 
 const app=express();
 
-app.get("/hello",(req,res)=>{
+app.get(/hello/,(req,res)=>{
     res.send("I am hello wala GET")
 })
 
-app.post("/hello",(req,res)=>{
-    res.send("I am hello wala POST")
+app.get(/a/,(req,res)=>{
+    res.send("I am inside routes")
 })
 
-app.use("/hello/ab",(req,res)=>{
-    res.send("abrakadabra")
-}) 
-
-
-app.use("/hello",(req,res)=>{
-    res.send("hello hello hello")
+app.get("/user/:userId/:name/:password",(req,res)=>{
+    console.log(req.params);
+    
+    res.send("I am user wala GET")
 })
 
-app.use("/test",(req,res)=>{
-    res.send("test from server")
-})
-app.use("/",(req,res)=>{
-    res.send("enpty server")
-}) 
+// app.post("/hello",(req,res)=>{
+//     res.send("I am hello wala POST")
+// })
 
-app.listen(3000,()=>{
-    console.log("Server is sucessfully running on port 3000");
+// app.use("/hello/ab",(req,res)=>{
+//     res.send("abrakadabra")
+// }) 
+
+
+// app.use("/hello",(req,res)=>{
+//     res.send("hello hello hello")
+// })
+
+// app.use("/test",(req,res)=>{
+//     res.send("test from server")
+// })
+// app.use("/",(req,res)=>{
+//     res.send("enpty server")
+// }) 
+
+app.listen(7777,()=>{
+    console.log("Server is sucessfully running on port 7777");
     
 });
