@@ -2,22 +2,30 @@ const express=require("express");
 
 const app=express();
 
-const {adminAuth,userAuth}=require("./middlewares/auth.js")
-
-app.use("/admin",adminAuth)
-// app.use("/user",userAuth)
-
-app.get("/admin/getAdmin",(req,res)=>{
-    res.send("Getting Admins Data") 
+app.use("/",(err,req,res,next)=>{
+    if(err){
+        res.status(500).send("Lol Error aagaya")
+    }
 })
 
-app.get("/user/login",(req,res)=>{
-    res.send("Getting user Data") 
+app.get("/admin",(req,res)=>{
+    //try{
+        throw new Error("some random error");
+    //}
+    // catch{
+    //     res.status(500).send("Something happend, please try to contact support team")
+    // }
 })
 
-app.get("/user/insideDashboard",userAuth,(req,res)=>{
-    res.send("User is in inside dashboard") 
+app.use("/",(err,req,res,next)=>{
+    if(err){
+        res.status(500).send("Lol Error aagaya")
+    }
 })
+
+//this is the last priority to solve errors.
+
+
 
 app.listen(7777,()=>{
     console.log("Server is sucessfully running on port 7777");
