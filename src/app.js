@@ -1,33 +1,27 @@
 const express=require("express");
-
+const connectDB=require("./config/database")
 const app=express();
-
-app.use("/",(err,req,res,next)=>{
-    if(err){
-        res.status(500).send("Lol Error aagaya")
-    }
-})
-
-app.get("/admin",(req,res)=>{
-    //try{
-        throw new Error("some random error");
-    //}
-    // catch{
-    //     res.status(500).send("Something happend, please try to contact support team")
-    // }
-})
-
-app.use("/",(err,req,res,next)=>{
-    if(err){
-        res.status(500).send("Lol Error aagaya")
-    }
-})
-
-//this is the last priority to solve errors.
-
-
-
-app.listen(7777,()=>{
-    console.log("Server is sucessfully running on port 7777");
+const User=require("./models/user")
+app.post("/signup",async (req,res)=>{
     
+    const user=new User({
+        firstName:"Vinayaka",
+        lastName:"Shiva",
+        emailId:"vinayaka@shiva.com",
+        password:"vinayaka@123"
+    });
+    await user.save();
+    res.send("User data saved successfully")
+});
+
+connectDB()
+.then(()=>{
+    console.log("DB Connection Established...");
+    app.listen(7777,()=>{
+        console.log("Server is sucessfully running on port 7777");   
+    });
+})
+
+.catch((err)=>{
+    console.log("Database cannot be connected");
 });
