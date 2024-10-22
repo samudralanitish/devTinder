@@ -6,7 +6,7 @@ app.use(express.json()) //middleware
 app.get("/user",async (req,res)=>{
     const userEmail=req.body.emailId;
     try{
-        const users= await User.find({emailId:userEmail});
+        const users= await User.findOne({emailId:userEmail});
         if(users.length===0){
             res.status(400).send("user data not found")
         }
@@ -16,6 +16,15 @@ app.get("/user",async (req,res)=>{
     }
     catch(err){
         res.status(404).send("Error not found")
+    }
+})
+app.get("/feed",async (req,res)=>{
+    try{
+        const users=await User.find();
+        res.send(users)
+    }
+    catch{
+        res.status(400).status("unauthorized data")
     }
 })
 
