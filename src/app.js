@@ -2,18 +2,22 @@ const express=require("express");
 const connectDB=require("./config/database")
 const app=express();
 const User=require("./models/user")
-app.use(express.json())
-app.post("/signup",async (req,res)=>{
-    const user=new User(req.body);
+app.use(express.json()) //middleware
+app.get("/user",async (req,res)=>{
+    const userEmail=req.body.emailId;
     try{
-
-        await user.save();
-        res.send("User data saved successfully")
+        const users= await User.find({emailId:userEmail});
+        if(users.length===0){
+            res.status(400).send("user data not found")
+        }
+        else{
+            res.send(users);
+        }
     }
     catch(err){
-        res.status(400).send("error saving the data..."+err.message)
+        res.status(404).send("Error not found")
     }
-});
+})
 
 connectDB()
 .then(()=>{
