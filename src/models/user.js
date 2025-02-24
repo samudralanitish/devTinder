@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+const validator=require("validator");
 const userSchema=new mongoose.Schema({
     firstName:{
         type:String,
@@ -12,11 +13,21 @@ const userSchema=new mongoose.Schema({
         required:true,
         lowercase:true,
         unique:true,
-        trim:true
+        trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid Email Address: "+ value);
+            }
+        }
     },
     password:{
         type:String,
-        required:true
+        required:true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Password is not Strong: "+value)
+            }
+        }
     },
     age:{
         type:Number,
@@ -32,7 +43,12 @@ const userSchema=new mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shutterstock.com%2Fsearch%2Fdummy-profile&psig=AOvVaw2PTu2Jo-2j9DuU2JTFtp2F&ust=1740392165076000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCMi6uZrI2YsDFQAAAAAdAAAAABAJ"
+        default:"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shutterstock.com%2Fsearch%2Fdummy-profile&psig=AOvVaw2PTu2Jo-2j9DuU2JTFtp2F&ust=1740392165076000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCMi6uZrI2YsDFQAAAAAdAAAAABAJ",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Photo URL is not valid:" + value);
+            }
+        }
     },
     about:{
         type:String,

@@ -70,8 +70,17 @@ app.patch("/upd/:userId",async(req,res)=>{
         const isUpdateAllowed=Object.keys(data).every((k)=>
             ALLOWED_UPDATES.includes(k)
         )
+        // if(Object.keys(isUpdateAllowed).length==0){
+        //     return res.status(400).send("No valid fields to update.")
+        // }
+        // const isSameData=Object.keys(isUpdateAllowed).every(
+        //     (key)=>JSON.stringify(userId[key]==JSON.stringify(isUpdateAllowed[key]))
+        // );
+        // if(isSameData){
+        //     return res.status(200).send("Data is already updated");
+        // }
         if(data?.skills.length>10){
-            throw new Error("Skills cannot be mor than 10");
+            throw new Error("Skills cannot be more than 10");
         }
         if(!isUpdateAllowed){
             throw new Error("Update Not Allowed");
@@ -83,7 +92,7 @@ app.patch("/upd/:userId",async(req,res)=>{
         res.send("user updated successfully");
     }
     catch(err){
-        res.status(400).send("update falied: "+err.message)
+        res.status(400).send("update failed: "+err.message)
     }
 })
 
