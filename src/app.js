@@ -2,16 +2,20 @@ const express=require("express");
 const connectDB=require("./config/database")
 const app=express();
 const User=require("./models/user");
+
+const {validateSignUpData}=require('./utils/validations')
 app.use(express.json()) //middleware to our app
 app.post("/signup",async(req,res)=>{
-    console.log(req.body);
-    const user=new User(req.body);
+    // console.log(req.body);
     try{
+        validateSignUpData(req);
+        
+        const user=new User(req.body);
         await user.save(req.body);
         res.send("User data added successfully")
     }
     catch(err){
-        res.status(400).send("Error saving the user:"+err.message)
+        res.status(400).send("ERROR:"+err.message)
     }
     
 });
