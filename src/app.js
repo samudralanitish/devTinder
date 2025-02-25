@@ -4,7 +4,7 @@ const app=express();
 const User=require("./models/user");
 const bcrypt=require("bcrypt")
 
-const {validateSignUpData}=require('./utils/validations')
+const validateSignUpData=require('./utils/validations')
 app.use(express.json()) //middleware to our app
 app.post("/signup",async(req,res)=>{
     // console.log(req.body);
