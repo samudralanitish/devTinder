@@ -2,6 +2,7 @@ const express=require("express");
 const connectDB=require("./config/database")
 const app=express();
 const User=require("./models/user");
+const bcrypt=require("bcrypt")
 
 const {validateSignUpData}=require('./utils/validations')
 app.use(express.json()) //middleware to our app
@@ -9,15 +10,50 @@ app.post("/signup",async(req,res)=>{
     // console.log(req.body);
     try{
         validateSignUpData(req);
+        const {firstName, lastName, emailId, password}=req.body;
+        //Encrypt the password
+
+        const passwordHash=await bcrypt.hash(password,10);
+        console.log(passwordHash);
         
-        const user=new User(req.body);
-        await user.save(req.body);
+
+        const user=new User({firstName,
+            lastName,
+            emailId,
+            password:passwordHash});
+        await user.save();
         res.send("User data added successfully")
     }
     catch(err){
         res.status(400).send("ERROR:"+err.message)
     }
     
+});
+
+app.post("/login",async(req,res)=>{
+    try{
+        const {emailId, password}=req.body;
+
+        const user=await User.findOne({emailId:emailId});
+        if(!user){
+            console.log("failed");
+            throw new Error("User is not registered yet");
+        }
+        const isPasswordValid= await bcrypt.compare(password,user.password);
+
+        if(isPasswordValid){
+            res.status(200).send("Login Successful");
+            console.log("Done");
+            
+        }
+        else{
+            console.log("failed");
+            throw new Error("Password is not correct");
+        }
+    }
+    catch(err){
+        res.status(400).send("Error: "+err.message);
+    }
 });
 
 app.get("/feed",async (req,res)=>{
@@ -70,7 +106,7 @@ app.patch("/upd/:userId",async(req,res)=>{
     const data=req.body;
     try{
         // ee two lines are only for upadating the particular details only
-        const ALLOWED_UPDATES=["age","gender","password","photoUrl","about","skills"]
+        const ALLOWED_UPDATES=["firstName","lastName","age","gender","password","photoUrl","about","skills"]
         const isUpdateAllowed=Object.keys(data).every((k)=>
             ALLOWED_UPDATES.includes(k)
         )
