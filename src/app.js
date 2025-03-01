@@ -3,9 +3,12 @@ const connectDB=require("./config/database")
 const app=express();
 const User=require("./models/user");
 const bcrypt=require("bcrypt")
-
 const validateSignUpData=require('./utils/validations')
+const jwt=require("jsonwebtoken");
+const cookieParser=require("cookie-parser");
+
 app.use(express.json()) //middleware to our app
+app.use(cookieParser()); // middleware foor cookies
 app.post("/signup",async(req,res)=>{
     // console.log(req.body);
     try{
@@ -37,17 +40,29 @@ app.post("/login",async(req,res)=>{
         const user=await User.findOne({emailId:emailId});
         if(!user){
             console.log("failed");
+            // here we are writing this clearCookie if a user is not registerd yet..
+            // It will clear the cookie 
+            res.clearCookie("token"); 
             throw new Error("User is not registered yet");
+            
         }
         const isPasswordValid= await bcrypt.compare(password,user.password);
-
         if(isPasswordValid){
+            // 1. Create a JWT token
+
+            const token=jwt.sign({_id:user._id},"DEV@Tinder$789") //user ID with secret Key
+            //Everytime I logs in a new cookie will get generated
+
+            //2. Add the token to the cookie and send the response to the user
+
+            res.cookie("token",token, {httpOnly:true}); // Secre cookie (httpOnly)
             res.status(200).send("Login Successful");
             console.log("Done");
             
         }
         else{
             console.log("failed");
+            res.clearCookie("token");
             throw new Error("Password is not correct");
         }
     }
@@ -55,6 +70,35 @@ app.post("/login",async(req,res)=>{
         res.status(400).send("Error: "+err.message);
     }
 });
+
+app.get("/profile",async(req,res)=>{
+    try{
+        const cookies=req.cookies;
+        const {token}=cookies;
+        if(!token){
+            throw new Error("Invalid Token");
+        }
+
+        const decodedMsg = await jwt.verify(token,"DEV@Tinder$789")
+        console.log(decodedMsg);
+
+        const {_id}=decodedMsg;
+
+        console.log("Logged in user is: "+ _id);
+        // res.send("Read Cookies");
+
+        const user= await User.findById(_id);
+        if(!user){
+            throw new Error("User doesn't exist");
+        }
+
+        res.send(user);
+    }
+    catch(err){
+        res.status(400).send("Error: "+err.message);
+    }
+    
+})
 
 app.get("/feed",async (req,res)=>{
     const userEmail=req.body.emailId;
