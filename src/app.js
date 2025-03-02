@@ -48,11 +48,15 @@ app.post("/login",async(req,res)=>{
             throw new Error("User is not registered yet");
             
         }
-        const isPasswordValid= await bcrypt.compare(password,user.password);
+        const isPasswordValid = await user.validatePassword(password);
+
+        // const isPasswordValid= await bcrypt.compare(password,user.password);
         if(isPasswordValid){
+
+            const token= await user.getJWT();
             // 1. Create a JWT token
 
-            const token=jwt.sign({_id:user._id},"DEV@Tinder$789",{expiresIn:'1d'}) //user ID with secret Key
+            // const token=jwt.sign({_id:user._id},"DEV@Tinder$789",{expiresIn:'1d'}) //user ID with secret Key
             //Everytime I logs in a new cookie will get generated
 
             //2. Add the token to the cookie and send the response to the user
