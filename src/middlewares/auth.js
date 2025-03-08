@@ -15,7 +15,7 @@ try {
     }
 
     //Validate the token
-    const decodedObj= await jwt.verify(token, "DEV@Tinder$789");
+    const decodedObj= await jwt.verify(token, "DEV@Tinder$789"); //(token, secretKey)
 
     //now get the Id
     const {_id}=decodedObj;
@@ -28,13 +28,9 @@ try {
     }
     next();
 }
-
     catch(err){
         res.status(400).send("ERROR "+err.message)
     }
-
-
-
     
 }
 

@@ -15,16 +15,6 @@ app.use("/",authRouter)
 app.use("/",profileRouter)
 app.use("/",requestRouter)
 
-
-
-
-
-
-
-
-
-
-
 // app.get("/profile",userAuth async(req,res)=>{
 //     try{
 //         const cookies=req.cookies;
