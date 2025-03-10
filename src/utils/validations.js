@@ -24,15 +24,15 @@ const validateEditProfileData=(req)=>{
    which comes from req.body is present in our ALLOWED_EDITS or not -> returns boolean value*/
 
    const isEditAllowed= Object.keys(req.body).every(field=>ALLOWED_EDITS.includes(field));
-   if(Object.keys(isEditAllowed).length==0){
-        return "No valid fields to Update"
-   }
-   const isSameData = Object.keys(isEditAllowed).every(
-    (key)=>JSON.stringify(userId[key]==JSON.stringify(isEditAllowed[key])))
-    if(isSameData){
-        return res.status(200).send("Data is already updated");
-    }
-   return isEditAllowed   
+//    if(Object.keys(isEditAllowed).length==0){
+//         return "No valid fields to Update"
+//    }
+//    const isSameData = Object.keys(isEditAllowed).every(
+//     (key)=>JSON.stringify(userId[key]==JSON.stringify(isEditAllowed[key])))
+//     if(isSameData){
+//         return res.status(200).send("Data is already updated");
+//     }
+   return isEditAllowed;   
 
 }
 

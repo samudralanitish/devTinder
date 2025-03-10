@@ -45,9 +45,9 @@ authRouter.post("/login",async(req,res)=>{
             throw new Error("User is not registered yet");
             
         }
-        const isPasswordValid = await user.validatePassword(password);
+        // const isPasswordValid = await user.validatePassword(password); doubt undhi   
 
-        // const isPasswordValid= await bcrypt.compare(password,user.password);
+        const isPasswordValid= await bcrypt.compare(password,user.password);
         if(isPasswordValid){
 
             const token= await user.getJWT();
