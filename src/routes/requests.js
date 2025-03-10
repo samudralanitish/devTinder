@@ -14,6 +14,13 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
         const toUserId = req.params.toUserId;
         const status = req.params.status;
 
+        // we are validating our API which should only work for ignored and interested
+        const ALLOWED_STATUS = ["ignored", "interested" ];
+
+        if(!ALLOWED_STATUS.includes(status)){
+            return res.status(400).json({message: "Inavlid Status Type: " + status})
+        }
+
         const connectionRequest = new ConnectionRequest({
             fromUserId, toUserId, status
         })
