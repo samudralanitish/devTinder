@@ -21,10 +21,17 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
             return res.status(400).json({message: "Inavlid Status Type: " + status})
         }
 
+        // Check if FROM USER === TO USER
+        if(fromUserId.equals(toUserId)){
+            return res.status(400).json({message : "You can't send connection to yourself"})
+        }
+
+
         /* Now check whether there is an existing connection between FROM USER to TO USER 
             OR... TO USER to FROM USER*/
         const existingConnectionRequest = await ConnectionRequest.findOne({
             $or:[{fromUserId:fromUserId, toUserId:toUserId},{fromUserId:toUserId, toUserId:fromUserId}],
+            // $or: [{fromUserId,toUserId},{toUserId,fromUserId}] -> Doubt in this line
         })
         if(existingConnectionRequest){
             return res.status(400).json({message: "Connection is already existed"})
