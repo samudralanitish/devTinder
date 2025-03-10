@@ -4,7 +4,7 @@ const requestRouter = express.Router();
 
 const {userAuth} =require("../middlewares/auth")
 const ConnectionRequest = require("../models/connectionRequests");
-const user = require("../models/user")
+const User = require("../models/user")
 
 requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>{
 
@@ -20,6 +20,16 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
         if(!ALLOWED_STATUS.includes(status)){
             return res.status(400).json({message: "Inavlid Status Type: " + status})
         }
+
+        /* Check whether toUserId is existed in the DB, why because if you send any random
+            toUserId this API will take, so to avoid this we have DB level Check*/
+
+        const toUser = await User.findById(toUserId);
+
+        if(!toUser){
+            return res.status(400).json({message: "User Not Found"});
+        }
+
 
         // Check if FROM USER === TO USER
         if(fromUserId.equals(toUserId)){
