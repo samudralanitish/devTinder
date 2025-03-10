@@ -21,6 +21,16 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
             return res.status(400).json({message: "Inavlid Status Type: " + status})
         }
 
+        /* Now check whether there is an existing connection between FROM USER to TO USER 
+            OR... TO USER to FROM USER*/
+        const existingConnectionRequest = await ConnectionRequest.findOne({
+            $or:[{fromUserId:fromUserId, toUserId:toUserId},{fromUserId:toUserId, toUserId:fromUserId}],
+        })
+        if(existingConnectionRequest){
+            return res.status(400).json({message: "Connection is already existed"})
+        }
+
+
         const connectionRequest = new ConnectionRequest({
             fromUserId, toUserId, status
         })
