@@ -22,8 +22,16 @@ const connectionRequestSchema = new mongoose.Schema({
 },
 {
     timestamps: true,
-}
-);
+});
+
+// We can check in schema level also whether fromUserID is === to toUserId
+
+connectionRequestSchema.pre("save",function (){
+    const connectionRequest = this;
+    if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
+        throw new Error( "You Can't send request to yourself")
+    }
+})
 
 const ConnectionRequestModel = new mongoose.model("connectionRequest", connectionRequestSchema)
 

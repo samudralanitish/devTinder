@@ -23,9 +23,8 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
 
         /* Check whether toUserId is existed in the DB, why because if you send any random
             toUserId this API will take, so to avoid this we have DB level Check*/
-
         const toUser = await User.findById(toUserId);
-
+        //console.log(toUser); mottham user antha diguthundi
         if(!toUser){
             return res.status(400).json({message: "User Not Found"});
         }
@@ -53,8 +52,15 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async(req,res)=>
         })
         const data = await connectionRequest.save();
 
+        // if(status == "ignored"){
+        //     res.json({
+        //         message : "Connection ignored successfully",
+        //         data
+        //     });
+        // }
+
         res.json({
-            message : "Connection request sent successfully",
+            message : `${req.user.firstName + " "+ status + " "  + toUser.firstName + " " + "profile"} `,
             data
         });
     }   
