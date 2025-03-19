@@ -5,10 +5,12 @@ const connectionRequestSchema = new mongoose.Schema({
 
     fromUserId : {
         type : mongoose.Schema.Types.ObjectId,
+        ref : "User",
         required : true
     },
     toUserId : {
         type : mongoose.Schema.Types.ObjectId,
+        ref : "User",
         required : true
     },
     status : {
@@ -26,11 +28,12 @@ const connectionRequestSchema = new mongoose.Schema({
 
 // We can check in schema level also whether fromUserID is === to toUserId
 
-connectionRequestSchema.pre("save",function (){
+connectionRequestSchema.pre("save",function (next){
     const connectionRequest = this;
     if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
         throw new Error( "You Can't send request to yourself")
     }
+    next();
 })
 
 const ConnectionRequestModel = new mongoose.model("connectionRequest", connectionRequestSchema)
